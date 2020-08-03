@@ -2,14 +2,7 @@
 # PROGRAM FOR NUMERICALLY SOLVING SCHRODINGER'S EQUATION
 # MATTHEW SRNEC, SHIV UPADHYAY, and JEFFRY MADURA
 ##################################
-import sys
-ver=sys.version_info.major
-if ver==2:
-    from utils2 import *
-elif ver==3:
-    from utils3 import *
-else:
-    print("Python version not recognized. Python 2.5 or greater required.")
+from utils import *
 import numpy as np
 ##################################
 #FUNCTIONS
