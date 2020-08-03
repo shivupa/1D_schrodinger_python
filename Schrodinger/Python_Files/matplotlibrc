@@ -2,7 +2,8 @@
 #                                                 MATPLOTLIB RC FILE                                                  #
 #                                                    SHIV UPADHYAY                                                    #
 #######################################################################################################################
-backend:	macosx	# Backend for Mac Users
+# We can assume these were configured correctly, but if not try one of these
+#backend:	macosx	# Backend for Mac Users
 #backend:	qt4agg	# Backend for Windows Users
 #backend:	tkagg	# Backend for Linux Users
                              #############################################################

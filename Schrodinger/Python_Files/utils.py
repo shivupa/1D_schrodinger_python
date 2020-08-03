@@ -1,6 +1,5 @@
-import sys
-version=sys.version_info.major
 import os
+import six
 import numpy as np
 import scipy as sp
 import scipy.linalg as spla
@@ -14,7 +13,7 @@ try:
     print_color=True
 except:
     print_color=False
-np.set_printoptions(threshold='nan')
+np.set_printoptions(threshold=np.inf)
 titles={
     1:'Particle in an infinite potential well',
     2:'Particle in a finite well',
@@ -34,24 +33,24 @@ def print_center_text(s):
     for i in s:
         count+=1
     pad=(int)((79-count)/2.0)
-    print(' '*pad+s)
+    six.print_(' '*pad+s)
 def valid_input_error_message():
     if print_color:
-        print(Fore.RED+'\nPlease enter a valid input!\n')
+        six.print_(Fore.RED+'\nPlease enter a valid input!\n')
     else:
-        print('\nPlease enter a valid input!\n')
+        six.print_('\nPlease enter a valid input!\n')
 def print_startup():
-    print("")
-    print('*'*79)
+    six.print_("")
+    six.print_('*'*79)
     print_center_text('Welcome to the Schrodinger Solver!')
     print_center_text('Created by: Matthew Srnec, Shiv Upadhyay, and Jeffry Madura')
-    print('*'*79)
+    six.print_('*'*79)
 def print_choices():
-    print('\tPlease enter the case number you would like to study.')
-    print('\tCases:')
+    six.print_('\tPlease enter the case number you would like to study.')
+    six.print_('\tCases:')
     for i,j in titles.items():
-        print('\t\t {}. {}'.format(i,j))
-    print('\t\t99. Quit\n')
+        six.print_('\t\t {}. {}'.format(i,j))
+    six.print_('\t\t99. Quit\n')
 def choices(Case=111):
     if Case==111:
         # First Print
@@ -64,7 +63,7 @@ def choices(Case=111):
     else:
         print_choices()
     try:
-        Case=int(input('Enter case number (1-7 or 99): '))
+        Case=int(six.moves.input('Enter case number (1-7 or 99): '))
     except:
        Case=0
     if(Case in list(titles.keys())+[99]):
@@ -75,14 +74,14 @@ def choices(Case=111):
 def infinite_well_input(W=None,n=None):
     if W==None:
         try:
-            W=float(input('\nEnter the width of your infinite well in atomic units (a.u.).\n\tSelect a value between 0.5 and 15: '))
+            W=float(six.moves.input('\nEnter the width of your infinite well in atomic units (a.u.).\n\tSelect a value between 0.5 and 15: '))
             W,n=infinite_well_input(W=W)
         except ValueError:
             valid_input_error_message()
             W,n=infinite_well_input()
     else:
         try:
-            n=int(input('Enter the number of wavefunctions you would like to plot.\n\tThis value must be an integer: '))
+            n=int(six.moves.input('Enter the number of wavefunctions you would like to plot.\n\tThis value must be an integer: '))
         except ValueError:
             valid_input_error_message()
             W,n=infinite_well_input(W=W)
@@ -90,14 +89,14 @@ def infinite_well_input(W=None,n=None):
 def finite_well_input(W=None,D=None):
     if W==None:
         try:
-            W=float(input('\nEnter the width of your finite well in atomic units (a.u.).\n\tSelect a value between 1.0 and 15. '))
+            W=float(six.moves.input('\nEnter the width of your finite well in atomic units (a.u.).\n\tSelect a value between 1.0 and 15. '))
             W,D=finite_well_input(W=W)
         except ValueError:
             valid_input_error_message()
             W,D = finite_well_input()
     else:
         try:
-            D=-float(input('Enter the depth of your finite well in atomic units (a.u.).\n\tSelect a value between 20 and 500. '))
+            D=-float(six.moves.input('Enter the depth of your finite well in atomic units (a.u.).\n\tSelect a value between 20 and 500. '))
         except ValueError:
             valid_input_error_message()
             W,D=finite_well_input(W=W)
@@ -105,22 +104,22 @@ def finite_well_input(W=None,D=None):
 def double_finite_well_equal_depth_input(W=None,B=None,D=None):
     if W==None:
         try:
-            print("\nThis case's plot is sensitive to the following user inputs.  Be aware that too wide/deep a well may prevent the user from observing the wave-like nature of the wavefunctions. Users should experiment with inputs until the desired plot is generated.")
-            W=float(input('\nEnter the width of your finite wells in atomic units (a.u.). Select a value between 0.5 and 10. '))
+            six.print_("\nThis case's plot is sensitive to the following user inputs.  Be aware that too wide/deep a well may prevent the user from observing the wave-like nature of the wavefunctions. Users should experiment with inputs until the desired plot is generated.")
+            W=float(six.moves.input('\nEnter the width of your finite wells in atomic units (a.u.). Select a value between 0.5 and 10. '))
             W,B,D=double_finite_well_equal_depth_input(W=W)
         except ValueError:
             valid_input_error_message()
             W,B,D=double_finite_well_equal_depth_input()
     elif D==None:
         try:
-            D=-float(input('\nEnter the depth of your finite wells in atomic units (a.u.). Select an integer value between 30 and 500. '))
+            D=-float(six.moves.input('\nEnter the depth of your finite wells in atomic units (a.u.). Select an integer value between 30 and 500. '))
             W,B,D=double_finite_well_equal_depth_input(W=W,D=D)
         except ValueError:
             valid_input_error_message()
             W,B,D=double_finite_well_equal_depth_input(W=W)
     else:
         try:
-            B=float(input('\nEnter the distance between potential wells in atomic units (a.u.). Select an integer value between 0.1 and 10. '))
+            B=float(six.moves.input('\nEnter the distance between potential wells in atomic units (a.u.). Select an integer value between 0.1 and 10. '))
         except ValueError:
             valid_input_error_message()
             W,B,D=double_finite_well_equal_depth_input(W=W,D=D)
@@ -128,36 +127,36 @@ def double_finite_well_equal_depth_input(W=None,B=None,D=None):
 def double_finite_well_unequal_depth_input(W1=None,W2=None,B=None,D1=None,D2=None):
     if W1==None:
         try:
-            print("\nThis case's plot is sensitive to the following user inputs.  Be aware that too wide/deep a well may prevent the user from observing the wave-like nature of the wavefunctions. Users should experiment with inputs until the desired plot is generated.")
-            W1=float(input('\nEnter the width of finite well 1 in atomic units (a.u.). Select a value between 0.5 and 10. '))
+            six.print_("\nThis case's plot is sensitive to the following user inputs.  Be aware that too wide/deep a well may prevent the user from observing the wave-like nature of the wavefunctions. Users should experiment with inputs until the desired plot is generated.")
+            W1=float(six.moves.input('\nEnter the width of finite well 1 in atomic units (a.u.). Select a value between 0.5 and 10. '))
             W1,W2,B,D1,D2=double_finite_well_unequal_depth_input(W1=W1)
         except ValueError:
             valid_input_error_message()
             W1,W2,B,D1,D2=double_finite_well_unequal_depth_input()
     elif W2==None:
         try:
-            W2=float(input('\nEnter the width of finite well 2 in atomic units (a.u.). Select a value between 0.5 and 10. '))
+            W2=float(six.moves.input('\nEnter the width of finite well 2 in atomic units (a.u.). Select a value between 0.5 and 10. '))
             W1,W2,B,D1,D2=double_finite_well_unequal_depth_input(W1=W1,W2=W2)
         except ValueError:
             valid_input_error_message()
             W1,W2,B,D1,D2=double_finite_well_unequal_depth_input(W1=W1)
     elif B==None:
         try:
-            B=float(input('\nEnter the distance between potential wells in atomic units (a.u.). Select an integer value between 0.1 and 10. '))
+            B=float(six.moves.input('\nEnter the distance between potential wells in atomic units (a.u.). Select an integer value between 0.1 and 10. '))
             W1,W2,B,D1,D2=double_finite_well_unequal_depth_input(W1=W1,W2=W2,B=B)
         except ValueError:
             valid_input_error_message()
             W1,W2,B,D1,D2=double_finite_well_unequal_depth_input(W1=W1,W2=W2)
     elif D1==None:
         try:
-            D1=-float(input('\nEnter the depth of finite well 1 in atomic units (a.u.). Select an integer value between 30 and 500. '))
+            D1=-float(six.moves.input('\nEnter the depth of finite well 1 in atomic units (a.u.). Select an integer value between 30 and 500. '))
             W1,W2,B,D1,D2=double_finite_well_unequal_depth_input(W1=W1,W2=W2,B=B,D1=D1)
         except ValueError:
             valid_input_error_message()
             W1,W2,B,D1,D2=double_finite_well_unequal_depth_input(W1=W1,W2=W2,B=B)
     else:
         try:
-            D2=-float(input('\nEnter the depth of finite well 2 in atomic units (a.u.). Select an integer value between 30 and 500. '))
+            D2=-float(six.moves.input('\nEnter the depth of finite well 2 in atomic units (a.u.). Select an integer value between 30 and 500. '))
         except ValueError:
             valid_input_error_message()
             W1,W2,B,D1,D2=double_finite_well_unequal_depth_input(W1=W1,W2=W2,B=B,D1=D1)
@@ -165,14 +164,14 @@ def double_finite_well_unequal_depth_input(W1=None,W2=None,B=None,D1=None,D2=Non
 def harmonic_well_input(omega=None,D=None):
     if omega==None:
         try:
-            omega=float(input('\nEnter the force constant of your harmonic well.\n\tSelect a value between 0.3 and 1.4. '))
+            omega=float(six.moves.input('\nEnter the force constant of your harmonic well.\n\tSelect a value between 0.3 and 1.4. '))
             omega,D=harmonic_well_input(omega=omega)
         except ValueError:
             valid_input_error_message()
             omega,D=harmonic_well_input()
     else:
         try:
-            D=-float(input('Enter the depth of your harmonic well in atomic units(a.u.).\n\tSelect a value between 2 and 15. '))
+            D=-float(six.moves.input('Enter the depth of your harmonic well in atomic units(a.u.).\n\tSelect a value between 2 and 15. '))
         except ValueError:
             valid_input_error_message()
             omega,D=harmonic_well_input(omega=omega)
@@ -180,14 +179,14 @@ def harmonic_well_input(omega=None,D=None):
 def morse_well_input(omega=None,D=None):
     if omega==None:
         try:
-            omega=float(input('\nEnter the force constant of your morse well.\n\tSelect a value between 0.05 and 1.4. '))
+            omega=float(six.moves.input('\nEnter the force constant of your morse well.\n\tSelect a value between 0.05 and 1.4. '))
             omega,D=morse_well_input(omega=omega)
         except ValueError:
             valid_input_error_message()
             omega,D=morse_well_input()
     else:
         try:
-            D=-float(input('Enter the depth of your morse well in atomic units (a.u.).\n\tSelect a value between 2 and 15. '))
+            D=-float(six.moves.input('Enter the depth of your morse well in atomic units (a.u.).\n\tSelect a value between 2 and 15. '))
         except ValueError:
             valid_input_error_message()
             omega,D=morse_well_input(omega=omega)
@@ -195,28 +194,28 @@ def morse_well_input(omega=None,D=None):
 def Kronig_Penney_input(A=None,D=None,B=None,num_wells=None):
     if A==None:
         try:
-            A=float(input('\nEnter the width of the repeating finite wells in atomic units (a.u.).\n\tSelect a value between 1.0 and 15. '))
+            A=float(six.moves.input('\nEnter the width of the repeating finite wells in atomic units (a.u.).\n\tSelect a value between 1.0 and 15. '))
             A,D,B,num_wells=Kronig_Penney_input(A=A)
         except ValueError:
             valid_input_error_message()
             A,D,B,num_wells = Kronig_Penney_input()
     elif D==None:
         try:
-            D=-float(input('Enter the depth of the repeating finite wells in atomic units (a.u.).\n\tSelect a value between 20 and 500. '))
+            D=-float(six.moves.input('Enter the depth of the repeating finite wells in atomic units (a.u.).\n\tSelect a value between 20 and 500. '))
             A,D,B,num_wells=Kronig_Penney_input(A=A,D=D)
         except ValueError:
             valid_input_error_message()
             A,D,B,num_wells=Kronig_Penney_input(A=A)
     elif B==None:
         try:
-            B=float(input('Enter the separation distance of the repeating finite wells in atomic units (a.u.).\n\tSelect a value between 1.0 and 15. '))
+            B=float(six.moves.input('Enter the separation distance of the repeating finite wells in atomic units (a.u.).\n\tSelect a value between 1.0 and 15. '))
             A,D,B,num_wells=Kronig_Penney_input(A=A,D=D,B=B)
         except ValueError:
             valid_input_error_message()
             A,D,B,num_wells=Kronig_Penney_input(A=A,D=D)
     elif num_wells==None:
         try:
-            num_wells=int(input('Enter the number of repeating wells to use.\n\tSelect an odd integer between 3 and 7. '))
+            num_wells=int(six.moves.input('Enter the number of repeating wells to use.\n\tSelect an odd integer between 3 and 7. '))
         except ValueError:
             valid_input_error_message()
             A,D,B,num_wells=Kronig_Penney_input(A=A,D=D,B=B)
@@ -225,12 +224,12 @@ def ask_to_save_plot(error=False):
     if error==True:
         valid_input_error_message()
     try:
-        image=input('Would you like to save a .png image of your plot? Type yes or no. ')
+        image=six.moves.input('Would you like to save a .png image of your plot? Type yes or no. ')
     except:
         image=ask_to_save_plot(error=True)
     image=image.strip().lower()
     if image=='yes':
-        print('Your image will be saved in your current working directory.')
+        six.print_('Your image will be saved in your current working directory.')
     if image not in {'yes','no'}:
         image=ask_to_save_plot(error=True)
     return image
@@ -238,7 +237,7 @@ def ask_to_plot_squared(error=False):
     if error==True:
         valid_input_error_message()
     try:
-        sq=input('Would you like to plot the probability density (psi squared) instead of the probability amplitude (psi)? Type yes or no. ')
+        sq=six.moves.input('Would you like to plot the probability density (psi squared) instead of the probability amplitude (psi)? Type yes or no. ')
     except:
         sq=ask_to_plot_squared(error=True)
     sq=sq.strip().lower()
@@ -247,27 +246,27 @@ def ask_to_plot_squared(error=False):
     return sq
 def print_number_of_wavefunctions(n):
     if print_color:
-        print(Fore.RED+'\nMaximum number of wavefunctions for plotting is', Fore.RED + str(n), "\n")
+        six.print_(Fore.RED+'\nMaximum number of wavefunctions for plotting is', Fore.RED + str(n), "\n")
     else:
-        print('\nMaximum number of wavefunctions for plotting is', n)
+        six.print_('\nMaximum number of wavefunctions for plotting is', n)
 def output(Case,input_fields,input_values,E,n):
-    print("")
-    print('*'*79)
+    six.print_("")
+    six.print_('*'*79)
     print_center_text('Schrodinger Solver Output')
     print_center_text('Matthew Srnec and Shiv Upadhyay')
-    print('*'*79)
+    six.print_('*'*79)
     print_center_text(titles[Case])
-    print("")
-    print("\t\tInput:")
+    six.print_("")
+    six.print_("\t\tInput:")
     for i,j in zip(input_fields,input_values):
         print_center_text(str(i)+' : '+str(j))
-    print("")
-    print("\t\t{} lowest Bound States:".format(n))
+    six.print_("")
+    six.print_("\t\t{} lowest Bound States:".format(n))
     count=0
     for i in range(n):
         print_center_text('E({})='.format(i)+str(E[i]))
-    print('*'*79)
-    print("")
+    six.print_('*'*79)
+    six.print_("")
 ########
 # SHARED FUNCTIONS
 ########
@@ -522,4 +521,4 @@ def finite_well_plot_scaling(E,V,xvec,U,n,steps):
     return V_new,ScaleFactor,U_new,n
 
 if __name__ == "__main__":
-    print("\nSchrodinger utils file. This file was not meant to be run independently.")
+    six.print_("\nSchrodinger utils file. This file was not meant to be run independently.")
